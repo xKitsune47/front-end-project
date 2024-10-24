@@ -28,3 +28,6 @@ function App() {
 }
 
 export default App;
+
+// TODO
+// NAPRAWIC DOLNY SCROLL, PODEJRZENIE PADA NA GRIDA Z MIASTAMI, ALE NIE JEST TO PEWNE
