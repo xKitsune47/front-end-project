@@ -1,0 +1,79 @@
+/* 
+KOLORY - LINK
+https://coolors.co/2d2a32-ddd92a-eae151-eeefa8-fafdf6
+*/
+
+:root {
+    --color-primary: #2d2a32;
+    --color-secondary: #eae151;
+    --color-accent: #ddd92a;
+    --color-background: #fafdf6;
+    --color-font-primary: #fafdf6;
+    --color-font-secondary: #2d2a32;
+}
+
+/* TYLKO DLA KOMPONENTU PLACEHOLDER DO SPRAWDZANIA KOLOROW */
+.color {
+    width: 5rem;
+    height: 5rem;
+    border: 1px solid black;
+    margin: 1rem;
+}
+/* TYLKO DLA KOMPONENTU PLACEHOLDER DO SPRAWDZANIA KOLOROW */
+.color-primary {
+    background-color: var(--color-primary);
+}
+/* TYLKO DLA KOMPONENTU PLACEHOLDER DO SPRAWDZANIA KOLOROW */
+.color-secondary {
+    background-color: var(--color-secondary);
+}
+/* TYLKO DLA KOMPONENTU PLACEHOLDER DO SPRAWDZANIA KOLOROW */
+.color-accent {
+    background-color: var(--color-accent);
+}
+/* TYLKO DLA KOMPONENTU PLACEHOLDER DO SPRAWDZANIA KOLOROW */
+.color-background {
+    background-color: var(--color-background);
+}
+/* TYLKO DLA KOMPONENTU PLACEHOLDER DO SPRAWDZANIA KOLOROW */
+.color-font-primary {
+    background-color: var(--color-font-primary);
+}
+/* TYLKO DLA KOMPONENTU PLACEHOLDER DO SPRAWDZANIA KOLOROW */
+.color-font-secondary {
+    background-color: var(--color-font-secondary);
+}
+
+/* USTAWIENIA GLOBALNE, RUSZAC W OSTATECZNOSCI */
+html {
+    font-family: "Lexend";
+}
+/* USTAWIENIA GLOBALNE, RUSZAC W OSTATECZNOSCI */
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-background);
+}
+/* USTAWIENIA GLOBALNE, RUSZAC W OSTATECZNOSCI */
+h1 {
+    font-size: 4rem;
+}
+/* USTAWIENIA GLOBALNE, RUSZAC W OSTATECZNOSCI */
+h2 {
+    font-size: 3rem;
+}
+/* USTAWIENIA GLOBALNE, RUSZAC W OSTATECZNOSCI */
+h3 {
+    font-size: 2rem;
+}
+/* USTAWIENIA GLOBALNE, RUSZAC W OSTATECZNOSCI */
+p,
+span {
+    font-size: 1.5rem;
+}
+/* USTAWIENIA GLOBALNE, RUSZAC W OSTATECZNOSCI */
+.App {
+    width: 100%;
+    max-width: 100%;
+}
