@@ -93,4 +93,12 @@ function App() {
 export default App;
 
 // TODO
+// zrobic formularz do dodawania miast, przerobic wyswietlane miasta tak
+// aby mozna bylo dodac miasto z formularza, ktore bazowo jest NIEDODANE
+// do ulubionych i trzeba dodac, w innym wypadku po reloadzie strony
+// miasto to nie bedzie sie wyswietlac
 //
+// dorobic zmiane jednostek Cels <-> Fahr w headerze, zrobic to stanem w
+// najwyzszym w hierarchii pliku App.js
+//
+// dodac fetchowanie z API openweathermap
