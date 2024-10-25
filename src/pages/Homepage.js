@@ -1,6 +1,8 @@
 import Header from "../components/Header";
 
 function Homepage() {
+    document.title = "NR 51012";
+
     return (
         <div>
             <Header />
