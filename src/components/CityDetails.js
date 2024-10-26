@@ -65,7 +65,7 @@ function CityDetails({ children, city = "Wrocław", citiesState, onClick }) {
                     );
 
                 setCurrentWeather(data);
-                console.log(data);
+                // console.log(data.weather[0].icon);
 
                 setLoadingCurrent(false);
                 setErrorCurrent("");
@@ -133,14 +133,13 @@ function CityDetails({ children, city = "Wrocław", citiesState, onClick }) {
                                 <tr>
                                     {/* WEATHER ICON */}
                                     <td>
-                                        placeholder
-                                        {/* <img
-                                            src={`https://openweathermap.org/img/wn/${currentWeather?.weather[0]?.icon}@2x.png`}
+                                        <img
+                                            src={`https://openweathermap.org/img/wn/${currentWeather?.weather[0].icon}@2x.png`}
                                             alt={
                                                 currentWeather?.weather[0]
                                                     ?.description
                                             }
-                                        /> */}
+                                        />
                                     </td>
                                 </tr>
                                 {/* RAINFALL */}
