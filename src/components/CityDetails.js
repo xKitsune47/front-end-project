@@ -104,6 +104,7 @@ function CityDetails({ children, city = "Wrocław", citiesState, onClick }) {
 
         fetchCurrent();
         fetchLongterm();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
