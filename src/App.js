@@ -51,10 +51,10 @@ function App() {
         // placeholder cities
         const initialCities = JSON.stringify([
             "Legnica",
-            "Wrocław",
-            "Poznań",
-            "Opole",
-            "Zielona Góra",
+            // "Wrocław",
+            // "Poznań",
+            // "Opole",
+            // "Zielona Góra",
         ]);
         // if saved cities list is empty, place in a list of placeholder cities
         JSON.parse(localStorage.getItem("fav_cities")).length === 0 &&

@@ -12,7 +12,6 @@ function Forecast({ children, cities, onClick, citiesState }) {
                     return (
                         <CityDetails
                             city={city}
-                            cities={citiesState}
                             key={city}
                             citiesState={citiesState}
                             onClick={onClick}

@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddToFavourites from "./AddToFavourites";
+import API_KEY from "../API_KEY";
 
-function CityDetails({
-    children,
-    city = "Wrocław",
-    temperature = "20",
-    weatherDetails,
-    cities,
-    citiesState,
-    onClick,
-}) {
+function CityDetails({ children, city = "Wrocław", citiesState, onClick }) {
     const [showDetails, setShowDetails] = useState(false);
+    const [errorCurrent, setErrorCurrent] = useState("");
+    const [errorLongterm, setErrorLongterm] = useState("");
+    const [loadingCurrent, setLoadingCurrent] = useState(false);
+    const [loadingLongterm, setLoadingLongterm] = useState(false);
+    const [currentWeather, setCurrentWeather] = useState([]);
+    const [longtermWeather, setLongtermWeather] = useState([]);
 
     function handleShowDetails() {
         setShowDetails(!showDetails);
@@ -22,7 +21,90 @@ function CityDetails({
         }
     }
 
+    function calcWind(deg) {
+        if (deg === undefined) return "X";
+        let direction;
+        if (deg > 337.5 && deg < 22.5) {
+            direction = "⬇";
+        } else if (deg > 22.5 && deg < 67.5) {
+            direction = "↙";
+        } else if (deg > 67.5 && deg < 112.5) {
+            direction = "⬅";
+        } else if (deg > 112.5 && deg < 157.5) {
+            direction = "↖";
+        } else if (deg > 157.5 && deg < 202.5) {
+            direction = "⬆";
+        } else if (deg > 202.5 && deg < 247.5) {
+            direction = "↗";
+        } else if (deg > 247.5 && deg < 292.5) {
+            direction = "➡";
+        } else if (deg > 292.5 && deg < 337.5) {
+            direction = "↘";
+        }
+
+        return direction;
+    }
+
     document.addEventListener("keydown", closeCityForecast);
+
+    useEffect(function () {
+        async function fetchCurrent() {
+            try {
+                setLoadingCurrent(true);
+                setErrorCurrent("");
+                const res = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY()}`
+                );
+
+                if (!res.ok) throw new Error("Fetching movies went wrong");
+
+                const data = await res.json();
+                if (data.Response === "False")
+                    throw new Error(
+                        "Coudln't fetch current weather conditions"
+                    );
+
+                setCurrentWeather(data);
+                console.log(data);
+
+                setLoadingCurrent(false);
+                setErrorCurrent("");
+            } catch (err) {
+                console.error(err);
+                setErrorCurrent(err.message);
+            } finally {
+                setLoadingCurrent(false);
+            }
+        }
+
+        async function fetchLongterm() {
+            try {
+                setLoadingLongterm(true);
+                setErrorLongterm("");
+                const res = await fetch(
+                    `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY()}`
+                );
+
+                if (!res.ok) throw new Error("Fetching movies went wrong");
+
+                const data = await res.json();
+                if (data.Response === "False")
+                    throw new Error("Couldn't fetch longterm weather forecast");
+
+                setLongtermWeather(data);
+                setLoadingLongterm(false);
+                setErrorLongterm("");
+            } catch (err) {
+                console.error(err);
+                setErrorLongterm(err.message);
+            } finally {
+                setLoadingLongterm(false);
+            }
+        }
+
+        fetchCurrent();
+        fetchLongterm();
+    }, []);
 
     return (
         <div className="city-container">
@@ -33,27 +115,69 @@ function CityDetails({
                 onClick={onClick}
             />
             <div className="city-details">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td className="item-right">🌡 {temperature}°C</td>
-                        </tr>
-                        <tr>
-                            <td>⛅</td>
-                        </tr>
-                        <tr>
-                            <td>🌧 %, 0mm/m2</td>
-                        </tr>
-                    </tbody>
-                </table>
-                {showDetails && (
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>5day forecast</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                {loadingCurrent && "Ładowanie..."}
+                {!loadingCurrent && !errorCurrent && (
+                    <>
+                        <table>
+                            <tbody>
+                                {/* TEMPERATURE */}
+                                <tr>
+                                    <td className="item-right">
+                                        🌡{" "}
+                                        {Math.round(
+                                            currentWeather?.main?.temp - 273
+                                        )}
+                                        °C
+                                    </td>
+                                </tr>
+                                <tr>
+                                    {/* WEATHER ICON */}
+                                    <td>
+                                        placeholder
+                                        {/* <img
+                                            src={`https://openweathermap.org/img/wn/${currentWeather?.weather[0]?.icon}@2x.png`}
+                                            alt={
+                                                currentWeather?.weather[0]
+                                                    ?.description
+                                            }
+                                        /> */}
+                                    </td>
+                                </tr>
+                                {/* RAINFALL */}
+                                <tr>
+                                    <td>🌧 21.37%, 21.37mm/m2</td>
+                                </tr>
+                                {/* WIND */}
+                                <tr>
+                                    <td>
+                                        💨 {currentWeather?.wind?.speed} km/h{" "}
+                                        {calcWind(currentWeather?.wind?.deg)}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {showDetails && (
+                            <>
+                                {loadingLongterm && "Ładowanie..."}
+                                {!loadingLongterm && !errorLongterm && (
+                                    <table>
+                                        <tbody>
+                                            {longtermWeather?.list?.map(
+                                                (elem) => {
+                                                    return (
+                                                        <LongtermForecast
+                                                            data={elem}
+                                                            key={elem?.dt_txt}
+                                                        />
+                                                    );
+                                                }
+                                            )}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </>
+                        )}
+                    </>
                 )}
             </div>
 
@@ -88,6 +212,34 @@ function CityDetails({
                 </svg>
             )}
         </div>
+    );
+}
+
+function LongtermForecast({ children, data }) {
+    return (
+        <>
+            <tr>
+                {/* DATETIME */}
+                <td className="longterm-wthr-cell">
+                    {data?.dt_txt?.slice(0, 10)} <br />
+                    {data?.dt_txt?.slice(10, 16)}
+                </td>
+                {/* WEATHER DATA */}
+                <td className="longterm-wthr-data longterm-wthr-cell">
+                    {Math.round(data.main.temp - 273)}°C{" "}
+                    <img
+                        src={`https://openweathermap.org/img/wn/${data?.weather[0]?.icon}@2x.png`}
+                        alt={data?.weather[0]?.description}
+                    />
+                </td>
+            </tr>
+            {/* SEPARATOR */}
+            <tr>
+                <td colSpan={2}>
+                    <hr />
+                </td>
+            </tr>
+        </>
     );
 }
 
