@@ -1,7 +1,12 @@
-function Footer() {
+function Footer({ children, onImperialChange, imperial }) {
     return (
         <div className="footer">
-            <p>Numer albumu 51012</p>
+            <p>
+                Jednostka: {imperial ? "Fahrenheit" : "Celsjusz"}{" "}
+                <span className="change-units" onClick={onImperialChange}>
+                    Zmień
+                </span>
+            </p>
         </div>
     );
 }

@@ -118,4 +118,22 @@
         background-color: var(--color-primary);
         color: var(--color-background);
     }
+
+    .change-units {
+        background-color: var(--color-background);
+        color: var(--color-font-secondary);
+        padding: 0.5rem;
+        margin-left: 1rem;
+        cursor: pointer;
+
+        transition: 0.3s all;
+        -webkit-transition: 0.3s all;
+        -moz-transition: 0.3s all;
+        -ms-transition: 0.3s all;
+        -o-transition: 0.3s all;
+    }
+
+    .change-units:hover {
+        background-color: var(--color-secondary);
+    }
 }

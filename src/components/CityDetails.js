@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import AddToFavourites from "./AddToFavourites";
 import API_KEY from "../API_KEY";
 
-function CityDetails({ children, city = "Wrocław", citiesState, onClick }) {
+function CityDetails({
+    children,
+    city = "Wrocław",
+    citiesState,
+    onClick,
+    imperial,
+}) {
     const [showDetails, setShowDetails] = useState(false);
     const [errorCurrent, setErrorCurrent] = useState("");
     const [errorLongterm, setErrorLongterm] = useState("");
@@ -107,6 +113,8 @@ function CityDetails({ children, city = "Wrocław", citiesState, onClick }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // console.log(currentWeather?.weather[0].icon);
+
     return (
         <div className="city-container">
             <h3>{city}</h3>
@@ -125,21 +133,35 @@ function CityDetails({ children, city = "Wrocław", citiesState, onClick }) {
                                 <tr>
                                     <td className="item-right">
                                         🌡{" "}
-                                        {Math.round(
-                                            currentWeather?.main?.temp - 273
-                                        )}
-                                        °C
+                                        {imperial
+                                            ? `${
+                                                  Math.round(
+                                                      currentWeather?.main
+                                                          ?.temp - 273
+                                                  ) *
+                                                      1.8 +
+                                                  32
+                                              }°F`
+                                            : `${Math.round(
+                                                  currentWeather?.main?.temp -
+                                                      273
+                                              )}°C`}
                                     </td>
                                 </tr>
                                 <tr>
                                     {/* WEATHER ICON */}
                                     <td>
-                                        <img
+                                        {/* dunno why it's not working */}
+                                        {/* <img
                                             src={`https://openweathermap.org/img/wn/${currentWeather?.weather[0].icon}@2x.png`}
                                             alt={
                                                 currentWeather?.weather[0]
                                                     ?.description
                                             }
+                                        /> */}
+                                        <img
+                                            src={`https://openweathermap.org/img/wn/04n@2x.png`}
+                                            alt="04n"
                                         />
                                     </td>
                                 </tr>

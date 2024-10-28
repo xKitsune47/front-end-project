@@ -13,6 +13,7 @@ import Forecast from "./pages/Forecast";
 function App() {
     document.title = "NR 51012";
     const saved = JSON.parse(localStorage.getItem("fav_cities"));
+    const [imperial, setImperial] = useState(false);
 
     const [citiesState, setCitiesState] = useState(saved);
     function handleCity(elem) {
@@ -47,6 +48,10 @@ function App() {
         }
     }
 
+    function handleImperialChange() {
+        setImperial(!imperial);
+    }
+
     useEffect(function () {
         // placeholder cities
         const initialCities = JSON.stringify([
@@ -73,6 +78,7 @@ function App() {
                                 cities={saved}
                                 onClick={handleCity}
                                 citiesState={citiesState}
+                                imperial={imperial}
                             />
                         }></Route>
                     <Route
@@ -85,7 +91,10 @@ function App() {
                         }></Route>
                 </Routes>
             </BrowserRouter>
-            <Footer />
+            <Footer
+                onImperialChange={handleImperialChange}
+                imperial={imperial}
+            />
         </div>
     );
 }
@@ -98,7 +107,7 @@ export default App;
 // do ulubionych i trzeba dodac, w innym wypadku po reloadzie strony
 // miasto to nie bedzie sie wyswietlac
 //
-// dorobic zmiane jednostek Cels <-> Fahr w headerze, zrobic to stanem w
+// dorobic zmiane jednostek Cels <-> Fahr w footerze, zrobic to stanem w
 // najwyzszym w hierarchii pliku App.js
 //
 // dodac fetchowanie z API openweathermap
