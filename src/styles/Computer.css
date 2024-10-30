@@ -88,6 +88,17 @@
         }
     }
 
+    .city-lookup {
+        width: 100%;
+        text-align: center;
+
+        input {
+            padding: 1rem;
+            font-size: 1.5rem;
+            margin: 1rem;
+        }
+    }
+
     .longterm-wthr-cell {
         text-align: center;
         display: flex;

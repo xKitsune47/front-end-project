@@ -17,22 +17,32 @@ function App() {
         JSON.parse(localStorage.getItem("fav_cities"))
     );
     const [lookup, setLookup] = useState("");
-    const [citiesState, setCitiesState] = useState([...saved, lookup]);
+    const [citiesState, setCitiesState] = useState([...saved]);
     const [imperial, setImperial] = useState(
         JSON.parse(localStorage.getItem("imperial"))
     );
 
+    // removing city from citiesState state
+    function removeCity(elem) {
+        return citiesState.filter((ct) => ct !== elem);
+    }
+
     function handleSearchCity(e) {
-        console.log(e);
-        setLookup("");
+        e.preventDefault();
+
+        const term = e.target.firstChild.value;
+
+        setLookup(term);
+        setCitiesState([...citiesState, term]);
+        e.target.firstChild.value = "";
     }
 
     // city removal and addition in "Forecast" tab
     function handleCity(elem) {
         if (citiesState.includes(elem)) {
             // removes city from localStorage
-            const removeCity = citiesState.filter((ct) => ct !== elem);
-            setCitiesState(removeCity);
+            const removedCities = removeCity(elem);
+            setCitiesState(removedCities);
             localStorage.setItem("fav_cities", JSON.stringify(removeCity));
         } else if (!citiesState.includes(elem)) {
             // adds city to localStorage
@@ -51,10 +61,10 @@ function App() {
             localStorage.setItem("fav_cities", JSON.stringify(removeFav));
         }
         setSaved(JSON.parse(localStorage.getItem("fav_cities")));
-        setCitiesState(citiesState.filter((ct) => ct !== elem));
+        setCitiesState(removeCity(elem));
     }
 
-    // if ran: changes temp unit C <-> F
+    // if executed: changes temp unit C <-> F
     function handleImperialChange() {
         setImperial(!imperial);
         localStorage.setItem("imperial", JSON.stringify(!imperial));
@@ -65,7 +75,7 @@ function App() {
         // placeholder cities
         const initialCities = JSON.stringify([
             "Legnica",
-            "Wrocław",
+            // "Wrocław",
             // "Poznań",
             // "Opole",
             // "Zielona Góra",
@@ -79,7 +89,7 @@ function App() {
             localStorage.setItem("imperial", false);
 
         // clear list from empty citiesState elements
-        setCitiesState(citiesState.filter((ct) => ct !== ""));
+        setCitiesState(removeCity(""));
     }, []);
 
     return (
@@ -94,6 +104,7 @@ function App() {
                                 cities={citiesState}
                                 onClick={handleCity}
                                 imperial={imperial}
+                                onCityLookup={handleSearchCity}
                             />
                         }
                     />
