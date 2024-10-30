@@ -10,8 +10,6 @@ import Homepage from "./pages/Homepage";
 import Favourites from "./pages/Favourites";
 import Forecast from "./pages/Forecast";
 
-// localStorage.setItem("fav_cities", JSON.stringify(["Legnica"]));
-
 function App() {
     document.title = "NR 51012";
 
@@ -37,25 +35,27 @@ function App() {
         e.target.firstChild.value = "";
     }
 
-    // city removal and addition in "Forecast" tab
+    // city removal and addition to favs
     function handleCity(elem) {
-        if (citiesState.includes(elem)) {
+        if (citiesState.includes(elem) && saved.includes(elem)) {
             // removes city from localStorage
             const removedCities = removeCity(elem);
-            setCitiesState(removedCities);
             localStorage.setItem("fav_cities", JSON.stringify(removedCities));
-            setSaved(JSON.stringify(removedCities));
-        } else if (!citiesState.includes(elem)) {
+            setSaved(removedCities);
+        }
+        if (!saved.includes(elem)) {
             // adds city to localStorage
             const addCity = [
                 ...JSON.parse(localStorage.getItem("fav_cities")),
                 elem,
             ];
+
             localStorage.setItem("fav_cities", JSON.stringify(addCity));
+            setSaved(JSON.stringify(addCity));
         }
     }
 
-    // city removal from "Favourites" tab
+    // city removal from favs
     function handleDelete(elem) {
         if (saved.includes(elem)) {
             const removeFav = saved.filter((ct) => ct !== elem);
