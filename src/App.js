@@ -10,13 +10,14 @@ import Homepage from "./pages/Homepage";
 import Favourites from "./pages/Favourites";
 import Forecast from "./pages/Forecast";
 
+// localStorage.setItem("fav_cities", JSON.stringify(["Legnica"]));
+
 function App() {
     document.title = "NR 51012";
 
     const [saved, setSaved] = useState(
         JSON.parse(localStorage.getItem("fav_cities"))
     );
-    const [lookup, setLookup] = useState("");
     const [citiesState, setCitiesState] = useState([...saved]);
     const [imperial, setImperial] = useState(
         JSON.parse(localStorage.getItem("imperial"))
@@ -32,7 +33,6 @@ function App() {
 
         const term = e.target.firstChild.value;
 
-        setLookup(term);
         setCitiesState([...citiesState, term]);
         e.target.firstChild.value = "";
     }
@@ -43,7 +43,8 @@ function App() {
             // removes city from localStorage
             const removedCities = removeCity(elem);
             setCitiesState(removedCities);
-            localStorage.setItem("fav_cities", JSON.stringify(removeCity));
+            localStorage.setItem("fav_cities", JSON.stringify(removedCities));
+            setSaved(JSON.stringify(removedCities));
         } else if (!citiesState.includes(elem)) {
             // adds city to localStorage
             const addCity = [
@@ -90,6 +91,7 @@ function App() {
 
         // clear list from empty citiesState elements
         setCitiesState(removeCity(""));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

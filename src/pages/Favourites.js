@@ -8,7 +8,7 @@ function Favourites({ children, cities, onDelete }) {
             <div className="favs-container">
                 <table>
                     <tbody>
-                        {cities.map((city, i) => {
+                        {cities?.map((city, i) => {
                             return (
                                 <>
                                     <tr key={city}>
