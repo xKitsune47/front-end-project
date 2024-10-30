@@ -1,4 +1,4 @@
-function AddToFavourites({ children, city, cities, onClick }) {
+function AddToFavourites({ children, city, onClick }) {
     const loaded = JSON.parse(localStorage.getItem("fav_cities"));
 
     return loaded.includes(city) ? (

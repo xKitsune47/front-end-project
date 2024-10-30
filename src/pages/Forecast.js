@@ -1,7 +1,7 @@
 import CityDetails from "../components/CityDetails";
 import Header from "../components/Header";
 
-function Forecast({ children, cities, onClick, citiesState, imperial }) {
+function Forecast({ children, cities, onClick, imperial }) {
     document.title = "Prognoza";
 
     return (
@@ -13,7 +13,6 @@ function Forecast({ children, cities, onClick, citiesState, imperial }) {
                         <CityDetails
                             city={city}
                             key={city}
-                            citiesState={citiesState}
                             onClick={onClick}
                             imperial={imperial}
                         />

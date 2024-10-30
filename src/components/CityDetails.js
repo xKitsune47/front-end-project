@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import AddToFavourites from "./AddToFavourites";
 import API_KEY from "../API_KEY";
 
-function CityDetails({
-    children,
-    city = "Wrocław",
-    citiesState,
-    onClick,
-    imperial,
-}) {
+function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
     const [showDetails, setShowDetails] = useState(false);
     const [errorCurrent, setErrorCurrent] = useState("");
     const [errorLongterm, setErrorLongterm] = useState("");
@@ -118,11 +112,7 @@ function CityDetails({
     return (
         <div className="city-container">
             <h3>{city}</h3>
-            <AddToFavourites
-                cities={citiesState}
-                city={city}
-                onClick={onClick}
-            />
+            <AddToFavourites city={city} onClick={onClick} />
             <div className="city-details">
                 {loadingCurrent && "Ładowanie..."}
                 {!loadingCurrent && !errorCurrent && (

@@ -12,10 +12,13 @@ import Forecast from "./pages/Forecast";
 
 function App() {
     document.title = "NR 51012";
-    const saved = JSON.parse(localStorage.getItem("fav_cities"));
-    const [imperial, setImperial] = useState(false);
 
-    const [citiesState, setCitiesState] = useState(saved);
+    const [citiesState, setCitiesState] = useState(
+        JSON.parse(localStorage.getItem("fav_cities"))
+    );
+    const [imperial, setImperial] = useState(
+        JSON.parse(localStorage.getItem("imperial"))
+    );
 
     // city removal and addition in "Forecast" tab
     function handleCity(elem) {
@@ -47,6 +50,7 @@ function App() {
     // if ran: changes temp unit C <-> F
     function handleImperialChange() {
         setImperial(!imperial);
+        localStorage.setItem("imperial", JSON.stringify(!imperial));
     }
 
     // checks if the localStorage data is present, if not creates it
@@ -72,17 +76,17 @@ function App() {
         <div className="App">
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<Homepage />}></Route>
+                    <Route path="/" element={<Homepage />} />
                     <Route
                         path="/prognoza"
                         element={
                             <Forecast
-                                cities={saved}
+                                cities={citiesState}
                                 onClick={handleCity}
-                                citiesState={citiesState}
                                 imperial={imperial}
                             />
-                        }></Route>
+                        }
+                    />
                     <Route
                         path="/ulubione-miasta"
                         element={
@@ -90,7 +94,8 @@ function App() {
                                 cities={citiesState}
                                 onDelete={handleDelete}
                             />
-                        }></Route>
+                        }
+                    />
                 </Routes>
             </BrowserRouter>
             <Footer
