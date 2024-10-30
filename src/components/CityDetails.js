@@ -56,7 +56,10 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
                     `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY()}`
                 );
 
-                if (!res.ok) throw new Error("Fetching movies went wrong");
+                if (!res.ok)
+                    throw new Error(
+                        "Fetching current weather conditions went wrong"
+                    );
 
                 const data = await res.json();
                 if (data.Response === "False")
@@ -85,7 +88,8 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
                     `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY()}`
                 );
 
-                if (!res.ok) throw new Error("Fetching movies went wrong");
+                if (!res.ok)
+                    throw new Error("Fetching longterm forecast went wrong");
 
                 const data = await res.json();
                 if (data.Response === "False")

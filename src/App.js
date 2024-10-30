@@ -13,12 +13,19 @@ import Forecast from "./pages/Forecast";
 function App() {
     document.title = "NR 51012";
 
-    const [citiesState, setCitiesState] = useState(
+    const [saved, setSaved] = useState(
         JSON.parse(localStorage.getItem("fav_cities"))
     );
+    const [lookup, setLookup] = useState("");
+    const [citiesState, setCitiesState] = useState([...saved, lookup]);
     const [imperial, setImperial] = useState(
         JSON.parse(localStorage.getItem("imperial"))
     );
+
+    function handleSearchCity(e) {
+        console.log(e);
+        setLookup("");
+    }
 
     // city removal and addition in "Forecast" tab
     function handleCity(elem) {
@@ -33,18 +40,18 @@ function App() {
                 ...JSON.parse(localStorage.getItem("fav_cities")),
                 elem,
             ];
-            setCitiesState(addCity);
             localStorage.setItem("fav_cities", JSON.stringify(addCity));
         }
     }
 
     // city removal from "Favourites" tab
     function handleDelete(elem) {
-        if (citiesState.includes(elem)) {
-            const removeFav = citiesState.filter((ct) => ct !== elem);
-            setCitiesState(removeFav);
+        if (saved.includes(elem)) {
+            const removeFav = saved.filter((ct) => ct !== elem);
             localStorage.setItem("fav_cities", JSON.stringify(removeFav));
         }
+        setSaved(JSON.parse(localStorage.getItem("fav_cities")));
+        setCitiesState(citiesState.filter((ct) => ct !== elem));
     }
 
     // if ran: changes temp unit C <-> F
@@ -58,7 +65,7 @@ function App() {
         // placeholder cities
         const initialCities = JSON.stringify([
             "Legnica",
-            // "Wrocław",
+            "Wrocław",
             // "Poznań",
             // "Opole",
             // "Zielona Góra",
@@ -70,6 +77,9 @@ function App() {
         // if temperature unit is null, create bool state
         JSON.parse(localStorage.getItem("imperial")) === null &&
             localStorage.setItem("imperial", false);
+
+        // clear list from empty citiesState elements
+        setCitiesState(citiesState.filter((ct) => ct !== ""));
     }, []);
 
     return (
@@ -91,7 +101,7 @@ function App() {
                         path="/ulubione-miasta"
                         element={
                             <Favourites
-                                cities={citiesState}
+                                cities={saved}
                                 onDelete={handleDelete}
                             />
                         }
@@ -113,8 +123,3 @@ export default App;
 // aby mozna bylo dodac miasto z formularza, ktore bazowo jest NIEDODANE
 // do ulubionych i trzeba dodac, w innym wypadku po reloadzie strony
 // miasto to nie bedzie sie wyswietlac
-//
-// dorobic zmiane jednostek Cels <-> Fahr w footerze, zrobic to stanem w
-// najwyzszym w hierarchii pliku App.js
-//
-// dodac fetchowanie z API openweathermap

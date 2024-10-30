@@ -16,6 +16,7 @@ function Favourites({ children, cities, onDelete }) {
                                             <DeleteCity
                                                 onClick={onDelete}
                                                 city={city}
+                                                key={city}
                                             />
                                         </td>
                                         <td>{city}</td>
