@@ -40,6 +40,7 @@ function App() {
         if (citiesState.includes(elem) && saved.includes(elem)) {
             // removes city from localStorage
             const removedCities = removeCity(elem);
+
             localStorage.setItem("fav_cities", JSON.stringify(removedCities));
             setSaved(removedCities);
         }
@@ -51,7 +52,7 @@ function App() {
             ];
 
             localStorage.setItem("fav_cities", JSON.stringify(addCity));
-            setSaved(JSON.stringify(addCity));
+            setSaved(addCity);
         }
     }
 
@@ -59,10 +60,10 @@ function App() {
     function handleDelete(elem) {
         if (saved.includes(elem)) {
             const removeFav = saved.filter((ct) => ct !== elem);
+
             localStorage.setItem("fav_cities", JSON.stringify(removeFav));
         }
         setSaved(JSON.parse(localStorage.getItem("fav_cities")));
-        setCitiesState(removeCity(elem));
     }
 
     // if executed: changes temp unit C <-> F
@@ -132,7 +133,5 @@ function App() {
 export default App;
 
 // TODO
-// zrobic formularz do dodawania miast, przerobic wyswietlane miasta tak
-// aby mozna bylo dodac miasto z formularza, ktore bazowo jest NIEDODANE
-// do ulubionych i trzeba dodac, w innym wypadku po reloadzie strony
-// miasto to nie bedzie sie wyswietlac
+// dodac usuwanie miasta z zakladki "Prognoza" bo jak sie zle wpisze to i tak
+// dodaje i pokazuje xddd

@@ -2,6 +2,7 @@ import Header from "../components/Header";
 
 function Favourites({ children, cities, onDelete }) {
     document.title = "Ulubione";
+
     return (
         <div>
             <Header />
