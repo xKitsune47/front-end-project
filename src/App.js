@@ -16,42 +16,40 @@ function App() {
     const [imperial, setImperial] = useState(false);
 
     const [citiesState, setCitiesState] = useState(saved);
+
+    // city removal and addition in "Forecast" tab
     function handleCity(elem) {
         if (citiesState.includes(elem)) {
-            setCitiesState(citiesState.filter((cty) => cty !== elem));
-            localStorage.setItem(
-                "fav_cities",
-                JSON.stringify(citiesState.filter((ct) => ct !== elem))
-            );
+            // removes city from localStorage
+            const removeCity = citiesState.filter((ct) => ct !== elem);
+            setCitiesState(removeCity);
+            localStorage.setItem("fav_cities", JSON.stringify(removeCity));
         } else if (!citiesState.includes(elem)) {
-            setCitiesState([
+            // adds city to localStorage
+            const addCity = [
                 ...JSON.parse(localStorage.getItem("fav_cities")),
                 elem,
-            ]);
-            localStorage.setItem(
-                "fav_cities",
-                JSON.stringify([
-                    ...JSON.parse(localStorage.getItem("fav_cities")),
-                    elem,
-                ])
-            );
+            ];
+            setCitiesState(addCity);
+            localStorage.setItem("fav_cities", JSON.stringify(addCity));
         }
     }
 
+    // city removal from "Favourites" tab
     function handleDelete(elem) {
         if (citiesState.includes(elem)) {
-            setCitiesState(citiesState.filter((cty) => cty !== elem));
-            localStorage.setItem(
-                "fav_cities",
-                JSON.stringify(citiesState.filter((ct) => ct !== elem))
-            );
+            const removeFav = citiesState.filter((ct) => ct !== elem);
+            setCitiesState(removeFav);
+            localStorage.setItem("fav_cities", JSON.stringify(removeFav));
         }
     }
 
+    // if ran: changes temp unit C <-> F
     function handleImperialChange() {
         setImperial(!imperial);
     }
 
+    // checks if the localStorage data is present, if not creates it
     useEffect(function () {
         // placeholder cities
         const initialCities = JSON.stringify([
@@ -64,6 +62,10 @@ function App() {
         // if saved cities list is empty, place in a list of placeholder cities
         JSON.parse(localStorage.getItem("fav_cities")).length === 0 &&
             localStorage.setItem("fav_cities", initialCities);
+
+        // if temperature unit is null, create bool state
+        JSON.parse(localStorage.getItem("imperial")) === null &&
+            localStorage.setItem("imperial", false);
     }, []);
 
     return (
