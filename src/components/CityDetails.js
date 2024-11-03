@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import AddToFavourites from "./AddToFavourites";
 import API_KEY from "../API_KEY";
+import { ShowMoreButton } from "./ShowMoreButton";
+import { LongtermForecast } from "./LongtermForecast";
 
 function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
     const [showDetails, setShowDetails] = useState(false);
@@ -45,7 +47,10 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
         return direction;
     }
 
-    document.addEventListener("keydown", closeCityForecast);
+    function calcTemp() {
+        const tempVar = Math.round(currentWeather?.main?.temp - 273);
+        return imperial ? tempVar * 1.8 + 32 + "°F" : tempVar + "°C";
+    }
 
     useEffect(function () {
         async function fetchCurrent() {
@@ -68,7 +73,6 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
                     );
 
                 setCurrentWeather(data);
-                // console.log(data.weather[0].icon);
 
                 setLoadingCurrent(false);
                 setErrorCurrent("");
@@ -106,12 +110,16 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
             }
         }
 
+        document.addEventListener("keydown", closeCityForecast);
+
         fetchCurrent();
         fetchLongterm();
+
+        return function () {
+            document.removeEventListener("keydown", closeCityForecast);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    // console.log(currentWeather?.weather[0].icon);
 
     return (
         <div className="city-container">
@@ -126,20 +134,7 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
                                 {/* TEMPERATURE */}
                                 <tr>
                                     <td className="item-right">
-                                        🌡{" "}
-                                        {imperial
-                                            ? `${
-                                                  Math.round(
-                                                      currentWeather?.main
-                                                          ?.temp - 273
-                                                  ) *
-                                                      1.8 +
-                                                  32
-                                              }°F`
-                                            : `${Math.round(
-                                                  currentWeather?.main?.temp -
-                                                      273
-                                              )}°C`}
+                                        🌡 {calcTemp()}
                                     </td>
                                 </tr>
                                 <tr>
@@ -173,6 +168,12 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
                             </tbody>
                         </table>
                         {showDetails && (
+                            <ShowMoreButton
+                                showDetails={showDetails}
+                                onShowDetails={handleShowDetails}
+                            />
+                        )}
+                        {showDetails && (
                             <>
                                 {loadingLongterm && "Ładowanie..."}
                                 {!loadingLongterm && !errorLongterm && (
@@ -197,65 +198,11 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
                 )}
             </div>
 
-            {/* dynamically choose which icon to show, arrow down if rolled up, arrow up if rolled down */}
-            {showDetails ? (
-                <svg
-                    onClick={handleShowDetails}
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-chevron-compact-up"
-                    viewBox="0 0 16 16">
-                    <path
-                        fillRule="evenodd"
-                        d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z"
-                    />
-                </svg>
-            ) : (
-                <svg
-                    onClick={handleShowDetails}
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-chevron-compact-down"
-                    viewBox="0 0 16 16">
-                    <path
-                        fillRule="evenodd"
-                        d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67"
-                    />
-                </svg>
-            )}
+            <ShowMoreButton
+                showDetails={showDetails}
+                onShowDetails={handleShowDetails}
+            />
         </div>
-    );
-}
-
-function LongtermForecast({ children, data }) {
-    return (
-        <>
-            <tr>
-                {/* DATETIME */}
-                <td className="longterm-wthr-cell">
-                    {data?.dt_txt?.slice(0, 10)} <br />
-                    {data?.dt_txt?.slice(10, 16)}
-                </td>
-                {/* WEATHER DATA */}
-                <td className="longterm-wthr-data longterm-wthr-cell">
-                    {Math.round(data.main.temp - 273)}°C{" "}
-                    <img
-                        src={`https://openweathermap.org/img/wn/${data?.weather[0]?.icon}@2x.png`}
-                        alt={data?.weather[0]?.description}
-                    />
-                </td>
-            </tr>
-            {/* SEPARATOR */}
-            <tr>
-                <td colSpan={2}>
-                    <hr />
-                </td>
-            </tr>
-        </>
     );
 }
 

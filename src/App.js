@@ -29,7 +29,8 @@ function App() {
     function handleSearchCity(e) {
         e.preventDefault();
 
-        const term = e.target.firstChild.value;
+        let term = e.target.firstChild.value;
+        term = term[0].toUpperCase() + term.substring(1);
 
         setCitiesState([...citiesState, term]);
         e.target.firstChild.value = "";
@@ -74,14 +75,9 @@ function App() {
 
     // checks if the localStorage data is present, if not creates it
     useEffect(function () {
-        // placeholder cities
-        const initialCities = JSON.stringify([
-            "Legnica",
-            // "Wrocław",
-            // "Poznań",
-            // "Opole",
-            // "Zielona Góra",
-        ]);
+        // placeholder city
+        const initialCities = JSON.stringify(["Legnica", "Wrocław"]);
+
         // if saved cities list is empty, place in a list of placeholder cities
         JSON.parse(localStorage.getItem("fav_cities")).length === 0 &&
             localStorage.setItem("fav_cities", initialCities);
@@ -133,5 +129,3 @@ function App() {
 export default App;
 
 // TODO
-// dodac usuwanie miasta z zakladki "Prognoza" bo jak sie zle wpisze to i tak
-// dodaje i pokazuje xddd

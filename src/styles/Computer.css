@@ -47,7 +47,7 @@
 
     .forecast-container {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
         grid-template-rows: repeat(1fr);
         gap: 2rem;
         padding: 5rem;
@@ -146,5 +146,16 @@
 
     .change-units:hover {
         background-color: var(--color-secondary);
+    }
+}
+
+@media only screen and (min-width: 1500px) {
+    .forecast-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: repeat(1fr);
+        gap: 2rem;
+        padding: 5rem;
+        margin-bottom: 5rem;
     }
 }
