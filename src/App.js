@@ -76,7 +76,13 @@ function App() {
     // checks if the localStorage data is present, if not creates it
     useEffect(function () {
         // placeholder city
-        const initialCities = JSON.stringify(["Legnica", "Wrocław"]);
+        const initialCities = JSON.stringify([
+            "Legnica",
+            "Wrocław",
+            "Opole",
+            "Tokyo",
+            "Berlin",
+        ]);
 
         // if saved cities list is empty, place in a list of placeholder cities
         JSON.parse(localStorage.getItem("fav_cities")).length === 0 &&
