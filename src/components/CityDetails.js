@@ -36,6 +36,7 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
     const [loadingLongterm, setLoadingLongterm] = useState(false);
     const [currentWeather, setCurrentWeather] = useState([]);
     const [longtermWeather, setLongtermWeather] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [imageError, setImageError] = useState(false);
 
     function handleShowDetails() {
@@ -154,7 +155,11 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
 
     return (
         <div className="city-container">
-            <h3>{city}</h3>
+            <h3>
+                {!loadingCurrent &&
+                    !errorCurrent &&
+                    `${city}, ${currentWeather?.sys?.country}`}
+            </h3>
             <AddToFavourites city={city} onClick={onClick} />
             <div className="city-details">
                 {loadingCurrent && "Ładowanie..."}
