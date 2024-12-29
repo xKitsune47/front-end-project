@@ -1,142 +1,136 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import AddToFavourites from "./AddToFavourites";
 import API_KEY from "../API_KEY";
 import { ShowMoreButton } from "./ShowMoreButton";
-import { LongtermForecast } from "./LongtermForecast";
+import ShortData from "./ShortData";
+import LongData from "./LongData";
 
-const WeatherIcon = ({ iconCode, description, onError }) => {
-    const [hasError, setHasError] = useState(false);
+const URL = "https://api.openweathermap.org/data/2.5";
 
-    const handleError = () => {
-        setHasError(true);
-        if (onError) onError();
-    };
-
-    const iconUrl =
-        hasError || !iconCode
-            ? "https://openweathermap.org/img/wn/04n@2x.png"
-            : `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-
-    return (
-        <img
-            src={iconUrl}
-            alt={description || "weather icon"}
-            onError={handleError}
-            className="weather-icon"
-            loading="lazy"
-        />
-    );
+const initialState = {
+    showDetails: false,
+    errorCurrent: "",
+    errorLongterm: "",
+    loadingCurrent: false,
+    loadingLongterm: false,
+    currentWeather: {},
+    longtermWeather: {},
+    imageError: false,
 };
 
-function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
-    const [showDetails, setShowDetails] = useState(false);
-    const [errorCurrent, setErrorCurrent] = useState("");
-    const [errorLongterm, setErrorLongterm] = useState("");
-    const [loadingCurrent, setLoadingCurrent] = useState(false);
-    const [loadingLongterm, setLoadingLongterm] = useState(false);
-    const [currentWeather, setCurrentWeather] = useState([]);
-    const [longtermWeather, setLongtermWeather] = useState([]);
-    const [imageError, setImageError] = useState(false);
+function reducer(state, action) {
+    switch (action.type) {
+        case "current/loading":
+            return { ...state, loadingCurrent: true };
+
+        case "current/loaded":
+            return { ...state, loadingCurrent: false };
+
+        case "longterm/loading":
+            return { ...state, loadingLongterm: true };
+
+        case "longterm/loaded":
+            return { ...state, loadingLongterm: false };
+
+        case "image/error":
+            return { ...state, imageError: true };
+
+        case "details/toggle":
+            return { ...state, showDetails: !state.showDetails };
+
+        case "details/hidden":
+            return { ...state, showDetails: action.payload };
+
+        case "currentData/loaded":
+            return {
+                ...state,
+                currentWeather: action.payload,
+                loadingCurrent: false,
+            };
+
+        case "longtermData/loaded":
+            return {
+                ...state,
+                longtermWeather: action.payload,
+                loadingLongterm: false,
+            };
+
+        case "current/rejected":
+            return {
+                ...state,
+                errorCurrent: action.payload,
+                loadingCurrent: false,
+            };
+
+        case "longterm/rejected":
+            return {
+                ...state,
+                errorLongterm: action.payload,
+                loadingLongterm: false,
+            };
+
+        default:
+            throw new Error("Operacja nieznana, CityDetails.js");
+    }
+}
+
+function CityDetails({ children, city = "Wrocław" }) {
+    const [
+        {
+            showDetails,
+            errorCurrent,
+            errorLongterm,
+            loadingCurrent,
+            loadingLongterm,
+            currentWeather,
+            longtermWeather,
+        },
+        dispatch,
+    ] = useReducer(reducer, initialState);
 
     function handleShowDetails() {
-        setShowDetails(!showDetails);
+        dispatch({ type: "details/toggle" });
     }
 
     function closeCityForecast(e) {
         if (e.key === "Escape") {
-            setShowDetails(false);
+            dispatch({ type: "details/hidden", payload: false });
         }
-    }
-
-    function calcWind(deg) {
-        if (deg === undefined) return "X";
-        let direction;
-        if (deg > 337.5 || deg <= 22.5) {
-            direction = "⬇";
-        } else if (deg > 22.5 && deg <= 67.5) {
-            direction = "↙";
-        } else if (deg > 67.5 && deg <= 112.5) {
-            direction = "⬅";
-        } else if (deg > 112.5 && deg <= 157.5) {
-            direction = "↖";
-        } else if (deg > 157.5 && deg <= 202.5) {
-            direction = "⬆";
-        } else if (deg > 202.5 && deg <= 247.5) {
-            direction = "↗";
-        } else if (deg > 247.5 && deg <= 292.5) {
-            direction = "➡";
-        } else if (deg > 292.5 && deg <= 337.5) {
-            direction = "↘";
-        }
-        return direction;
-    }
-
-    function calcTemp() {
-        const tempVar = Math.round(currentWeather?.main?.temp - 273);
-        return imperial
-            ? Math.round(tempVar * 1.8 + 32) + "°F"
-            : tempVar + "°C";
     }
 
     useEffect(
         function () {
             async function fetchCurrent() {
+                dispatch({ type: "current/loading" });
                 try {
-                    setLoadingCurrent(true);
-                    setErrorCurrent("");
                     const res = await fetch(
-                        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY()}`
+                        `${URL}/weather?q=${city}&appid=${API_KEY()}`
                     );
-
-                    if (!res.ok)
-                        throw new Error(
-                            "Fetching current weather conditions went wrong"
-                        );
-
                     const data = await res.json();
-                    if (data.Response === "False")
-                        throw new Error(
-                            "Coudln't fetch current weather conditions"
-                        );
-
-                    setCurrentWeather(data);
-                    setLoadingCurrent(false);
-                    setErrorCurrent("");
+                    dispatch({ type: "currentData/loaded", payload: data });
                 } catch (err) {
                     console.error(err);
-                    setErrorCurrent(err.message);
-                } finally {
-                    setLoadingCurrent(false);
+                    dispatch({
+                        type: "current/rejected",
+                        payload: err.message,
+                    });
                 }
             }
 
             async function fetchLongterm() {
+                dispatch({ type: "longterm/loading" });
                 try {
-                    setLoadingLongterm(true);
-                    setErrorLongterm("");
                     const res = await fetch(
-                        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY()}`
+                        `${URL}/forecast?q=${city}&appid=${API_KEY()}`
                     );
-
-                    if (!res.ok)
-                        throw new Error(
-                            "Fetching longterm forecast went wrong"
-                        );
-
                     const data = await res.json();
-                    if (data.Response === "False")
-                        throw new Error(
-                            "Couldn't fetch longterm weather forecast"
-                        );
-
-                    setLongtermWeather(data);
-                    setLoadingLongterm(false);
-                    setErrorLongterm("");
+                    dispatch({ type: "longtermData/loaded", payload: data });
                 } catch (err) {
                     console.error(err);
-                    setErrorLongterm(err.message);
-                } finally {
-                    setLoadingLongterm(false);
+                    dispatch({
+                        type: "longterm/rejected",
+                        payload: err.message,
+                    });
                 }
             }
 
@@ -155,75 +149,23 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
     return (
         <div className="city-container">
             <h3>{city}</h3>
-            <AddToFavourites city={city} onClick={onClick} />
+            <AddToFavourites city={city} />
             <div className="city-details">
                 {loadingCurrent && "Ładowanie..."}
                 {!loadingCurrent && !errorCurrent && (
                     <>
-                        <table>
-                            <tbody>
-                                {/* TEMPERATURE */}
-                                <tr>
-                                    <td className="item-right">
-                                        🌡 {calcTemp()}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    {/* WEATHER ICON */}
-                                    <td className="text-center">
-                                        <WeatherIcon
-                                            iconCode={
-                                                currentWeather?.weather?.[0]
-                                                    ?.icon
-                                            }
-                                            description={
-                                                currentWeather?.weather?.[0]
-                                                    ?.description
-                                            }
-                                            onError={() => setImageError(true)}
-                                        />
-                                    </td>
-                                </tr>
-                                {/* RAINFALL */}
-                                <tr>
-                                    <td>
-                                        🌧 {currentWeather?.rain?.["1h"] || "0"}
-                                        mm/m2, 21,37%
-                                    </td>
-                                </tr>
-                                {/* WIND */}
-                                <tr>
-                                    <td>
-                                        💨 {currentWeather?.wind?.speed || "0"}{" "}
-                                        km/h{" "}
-                                        {calcWind(currentWeather?.wind?.deg)}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        {showDetails && (
-                            <ShowMoreButton
-                                showDetails={showDetails}
-                                onShowDetails={handleShowDetails}
-                            />
-                        )}
+                        <ShortData currentWeather={currentWeather} />
+                        <ShowMoreButton
+                            showDetails={showDetails}
+                            onShowDetails={handleShowDetails}
+                        />
                         {showDetails && (
                             <>
                                 {loadingLongterm && "Ładowanie..."}
                                 {!loadingLongterm && !errorLongterm && (
-                                    <table>
-                                        <tbody>
-                                            {longtermWeather?.list?.map(
-                                                (elem) => (
-                                                    <LongtermForecast
-                                                        data={elem}
-                                                        key={elem?.dt_txt}
-                                                        imperial={imperial}
-                                                    />
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
+                                    <LongData
+                                        longtermWeather={longtermWeather}
+                                    />
                                 )}
                             </>
                         )}
@@ -231,10 +173,12 @@ function CityDetails({ children, city = "Wrocław", onClick, imperial }) {
                 )}
             </div>
 
-            <ShowMoreButton
-                showDetails={showDetails}
-                onShowDetails={handleShowDetails}
-            />
+            {showDetails && (
+                <ShowMoreButton
+                    showDetails={showDetails}
+                    onShowDetails={handleShowDetails}
+                />
+            )}
         </div>
     );
 }

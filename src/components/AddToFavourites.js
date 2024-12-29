@@ -1,10 +1,14 @@
-function AddToFavourites({ children, city, onClick }) {
+import { useForecast } from "../contexts/ForecastContext";
+
+function AddToFavourites({ children, city }) {
+    const { handleCity } = useForecast();
+
     const loaded = JSON.parse(localStorage.getItem("fav_cities"));
 
     return loaded.includes(city) ? (
         <span>
             <svg
-                onClick={() => onClick(city)}
+                onClick={() => handleCity(city)}
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -17,7 +21,7 @@ function AddToFavourites({ children, city, onClick }) {
     ) : (
         <span>
             <svg
-                onClick={() => onClick(city)}
+                onClick={() => handleCity(city)}
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"

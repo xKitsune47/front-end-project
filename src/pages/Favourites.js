@@ -1,31 +1,36 @@
 import Header from "../components/Header";
+import { useForecast } from "../contexts/ForecastContext";
 
-function Favourites({ children, cities, onDelete }) {
+function Favourites({ children }) {
     document.title = "Ulubione";
+
+    const { saved, handleCity } = useForecast();
 
     return (
         <div>
             <Header />
             <div className="favs-container">
-                <table>
-                    <tbody>
-                        {cities?.map((city, i) => {
+                <table key="favs-table">
+                    <tbody key="favs-table-body">
+                        {saved?.map((city, i) => {
                             return (
                                 <>
                                     <tr key={city} className="fav-city">
                                         <td>
                                             <DeleteCity
-                                                onClick={onDelete}
+                                                onClick={() => handleCity(city)}
                                                 city={city}
                                                 key={city}
                                             />
                                         </td>
                                         <td>{city}</td>
                                     </tr>
-                                    {!cities[i + 1] ? (
+                                    {!saved[i + 1] ? (
                                         ""
                                     ) : (
-                                        <tr className="separator">
+                                        <tr
+                                            className="separator"
+                                            key={`${city}-separator`}>
                                             <td colSpan={2}>
                                                 <hr />
                                             </td>
