@@ -1,27 +1,23 @@
 import CityDetails from "../components/CityDetails";
 import Header from "../components/Header";
+import { useForecast } from "../contexts/ForecastContext";
 
-function Forecast({ children, cities, onClick, imperial, onCityLookup }) {
+function Forecast({ children }) {
     document.title = "Prognoza";
+
+    const { citiesState, handleSearchCity } = useForecast();
 
     return (
         <div>
             <Header />
             <div className="city-lookup">
-                <form onSubmit={onCityLookup}>
+                <form onSubmit={handleSearchCity}>
                     <input type="text" placeholder="Wpisz miasto" />
                 </form>
             </div>
             <div className="forecast-container">
-                {cities.map((city) => {
-                    return (
-                        <CityDetails
-                            city={city}
-                            key={city}
-                            onClick={onClick}
-                            imperial={imperial}
-                        />
-                    );
+                {citiesState.map((city) => {
+                    return <CityDetails city={city} key={city} />;
                 })}
             </div>
         </div>

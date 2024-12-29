@@ -1,4 +1,8 @@
+import { useForecast } from "../contexts/ForecastContext";
+
 export function LongtermForecast({ children, data }) {
+    const { calcTemp } = useForecast();
+
     return (
         <>
             <tr>
@@ -9,7 +13,7 @@ export function LongtermForecast({ children, data }) {
                 </td>
                 {/* WEATHER DATA */}
                 <td className="longterm-wthr-data longterm-wthr-cell">
-                    {Math.round(data.main.temp - 273)}°C{" "}
+                    {calcTemp(data)}
                     <img
                         src={`https://openweathermap.org/img/wn/${data?.weather[0]?.icon}@2x.png`}
                         alt={data?.weather[0]?.description}
